@@ -3,6 +3,11 @@ require "cov_helper"
 require "coveralls"; Coveralls.wear!
 require "transact_pro"
 require "pry"
+require 'webmock'
+unless ENV["USE_LIVE_SANDBOX"] == "true"
+  WebMock.enable!
+  WebMock.disable_net_connect!(allow_localhost: false)
+end
 
 Dir[TransactPro.root.join('spec/support/**/*.rb')].each { |file| require file }
 
