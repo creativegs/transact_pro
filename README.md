@@ -13,13 +13,13 @@ As of v1.0.0 (2018-01-04) the full functionality status list is:
 |---|---|---|---|---|
 | SMS transaction init, card details entered merchant-side | *init | 12 | ✗ | - |
 | SMS transaction init, card details entered gateway-side | *init | 21 | ✓ | `tid` & `redirect link` |
-| SMS transaction init with card data save flag, card details entered gateway-side | *init_recurring_registration | 42 | ✓ | - |
+| SMS transaction init with card data save flag, card details entered gateway-side | *init_recurring_registration | 42 | ✓ | `tid` & `redirect link` |
 | DMS init, card details entered merchant-side | make_hold | 37 | ✗ | - |
 | DMS init, card details entered gateway-side | init_dms | 37 | ✗ | - |
 | DMS execute | charge_hold | 37 | ✗ | - |
 | Save card details for subsequent recurring payments, details entered gateway-side | init_store_card_sms | 45 | ✗ | - |
 | Recurrent SMS, init a recurring payment | init_recurrent | 46 | ✓ | `tid` |
-| Recurrent SMS, execute a recurring payment | charge_recurrent | 48 | ✓ | Status:Success... |
+| Recurrent SMS, execute a recurring payment | charge_recurrent | 48 | ✓ | "Status:Success..." |
 | Credit transaction init | init_credit | 17 | ✗ | - |
 | Credit transaction execute | do_credit | 17 | ✗ | - |
 | P2P transaction init | init_p2p | 18 | ✗ | - |
@@ -29,7 +29,7 @@ As of v1.0.0 (2018-01-04) the full functionality status list is:
 | Payment cancellation | cancel_request | 23  | ✗ | - |
 | DMS cancellation | cancel_dms | 38 | ✗ | - |
 | Payment execution (charge) | charge | 24 | ✗ | - |
-| Payment status request | status_request | 31 | ✓ | Status:Success... |
+| Payment status request | status_request | 31 | ✓ | "Status:Success..." |
 | Payment refund | ***refund | 34 | ✗ | "Refund Success" |
 | Card verification | verify_card | 39 | ✗ | - |
 | Terminal Limits | get_terminal_limits | 41 | ✗ | - |
@@ -78,17 +78,20 @@ gateway = TransactPro::Gateway.new(options)
 
 ### 2. `TransactPro::Request`
 
-Use the `Gateway` instance's `#request` method to perform requests.  
+Use the `Gateway` instance's `#request` method to build and perform requests.  
 
 ```rb
 options = {
   method: :status_request, # mandatory, exclusively symbol objects for value
   request_type: 'transaction_status',
   init_transaction_id: "abc123",
-  # Note that passing :guid and :pwd is possible and `#call` will always override any defaults with the latest passed values, but generally you should rely on these values being set correctly from GUID and PASSWORD in gateway configuration. 
+  # Note that passing :guid and :pwd is possible and `#call` will always override  
+  # any defaults with the latest passed values, but generally you should rely on
+  # these values being set correctly from GUID and PASSWORD in gateway configuration. 
   guid: "..."
   pwd: "..."
-  # Note that :rs is optional and will be inferred from gateway defaults, preferring 3D accounts to NON3D, where applicable.
+  # Note that :rs is optional and will be inferred from gateway defaults,
+  # preferring 3D accounts to NON3D, where applicable.
   rs: "..."
 }
 
@@ -100,7 +103,7 @@ request_instance.call #=> response
 
 ### 3. `TransactPro::Response`
 `Response` objects are thin wrappers around the response bodies received from communicating with the TransactPro API.  
-Use `#to_s` on them to get the raw body and do any handling yourslef.   
+Use `#to_s` on them to get the raw body and do any handling yourself.   
 The gem provides a couple methods for ease of use:
 
 ```rb
