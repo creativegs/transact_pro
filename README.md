@@ -6,7 +6,7 @@
 Lightweight Ruby wrapper for communicating with TransactPro 1stpayments.net card payment API.  
 
 ### What can this gem do?
-Currently core functionality is supported - single and recurring SMS payments with card details entered gateway-side (zero hassle with [PCI compliance](https://www.pcisecuritystandards.org)), payment outcome check request and refund request.     
+Currently core functionality is supported - single and recurring SMS payments with card details entered gateway-side (zero hassle with [PCI compliance](https://www.pcisecuritystandards.org)), and payment outcome check request.     
 As of v1.0.0 (2018-01-04) the full functionality status list is:
 
 | Functionality  | method name | Page in doc  | Support in gem  | response data  |
@@ -18,8 +18,8 @@ As of v1.0.0 (2018-01-04) the full functionality status list is:
 | DMS init, card details entered gateway-side | init_dms | 37 | ✗ | - |
 | DMS execute | charge_hold | 37 | ✗ | - |
 | Save card details for subsequent recurring payments, details entered gateway-side | init_store_card_sms | 45 | ✗ | - |
-| Recurrent SMS, init a recurring payment | init_recurrent | 46 | ✓ | TODO |
-| Recurrent SMS, execute a recurring payment | charge_recurrent | 48 | ✓ | TODO |
+| Recurrent SMS, init a recurring payment | init_recurrent | 46 | ✓ | `tid` |
+| Recurrent SMS, execute a recurring payment | charge_recurrent | 48 | ✓ | Status:Success... |
 | Credit transaction init | init_credit | 17 | ✗ | - |
 | Credit transaction execute | do_credit | 17 | ✗ | - |
 | P2P transaction init | init_p2p | 18 | ✗ | - |
@@ -29,7 +29,7 @@ As of v1.0.0 (2018-01-04) the full functionality status list is:
 | Payment cancellation | cancel_request | 23  | ✗ | - |
 | DMS cancellation | cancel_dms | 38 | ✗ | - |
 | Payment execution (charge) | charge | 24 | ✗ | - |
-| Payment status request | status_request | 31 | ✓ | TODO |
+| Payment status request | status_request | 31 | ✓ | Status:Success... |
 | Payment refund | ***refund | 34 | ✗ | "Refund Success" |
 | Card verification | verify_card | 39 | ✗ | - |
 | Terminal Limits | get_terminal_limits | 41 | ✗ | - |
