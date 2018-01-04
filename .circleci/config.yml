@@ -5,6 +5,9 @@ jobs:
     docker:           
       - image: circleci/ruby:2.1.10
       #- image: circleci/ruby@sha256:382aa3816e4a1447f56dfa5c70751a727eb276bb0d1617f1989e3ca28bb251f5
+        timezone: "Europe/Riga"
+        environment:
+          USER_IP: "78.23.51.103"
       
     steps:
       - checkout
