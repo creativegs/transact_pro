@@ -4,10 +4,21 @@ require "rest-client"
 require "transact_pro/request_specs"
 require "transact_pro/gateway"
 require "transact_pro/request"
+require "transact_pro/response"
 require "transact_pro/version"
 
 module TransactPro
   extend self
+
+  DEFAULTS = {
+    TEST: false,
+    PRODUCTION_ENV: {
+      API_URI: "https://www2.1stpayments.net/gwprocessor2.php"
+    },
+    TEST_ENV: {
+      API_URI: "https://gw2sandbox.tpro.lv:8443/gw2test/gwprocessor2.php"
+    }
+  }.freeze
 
   def root
     @@root ||= Pathname.new(Gem::Specification.find_by_name("transact_pro").gem_dir)

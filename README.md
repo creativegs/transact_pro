@@ -13,10 +13,11 @@ As of v1.0.0 (2018-01-04) the full functionality status list is:
 |---|---|---|---|---|
 | SMS transaction init, card details entered merchant-side | *init | 12 | ✗ | - |
 | SMS transaction init, card details entered gateway-side | *init | 21 | ✓ | `tid` & `redirect link` |
+| SMS transaction init with card data save flag, card details entered gateway-side | *init_recurring_registration | 42 | ✓ | - |
 | DMS init, card details entered merchant-side | make_hold | 37 | ✗ | - |
 | DMS init, card details entered gateway-side | init_dms | 37 | ✗ | - |
 | DMS execute | charge_hold | 37 | ✗ | - |
-| Recurrent SMS, first payment, card details entered gateway-side | init_store_card_sms | 45 | ✓ | `tid` & `redirect link` |
+| Save card details for subsequent recurring payments, details entered gateway-side | init_store_card_sms | 45 | ✗ | - |
 | Recurrent SMS, init a recurring payment | init_recurrent | 46 | ✓ | TODO |
 | Recurrent SMS, execute a recurring payment | charge_recurrent | 48 | ✓ | TODO |
 | Credit transaction init | init_credit | 17 | ✗ | - |
@@ -29,13 +30,14 @@ As of v1.0.0 (2018-01-04) the full functionality status list is:
 | DMS cancellation | cancel_dms | 38 | ✗ | - |
 | Payment execution (charge) | charge | 24 | ✗ | - |
 | Payment status request | status_request | 31 | ✓ | TODO |
-| Payment refund | refund | 34 | ✓ | "Refund Success" |
+| Payment refund | ***refund | 34 | ✗ | "Refund Success" |
 | Card verification | verify_card | 39 | ✗ | - |
 | Terminal Limits | get_terminal_limits | 41 | ✗ | - |
 | Reconciled Transactions | rt_api | 43 | ✗ | - |
 
 *init request is the same for both card data entry strategies, since the receiving Merchant __Account__ determines what sort of response to give.     
 **moto methods are recurring payments performed on card data saved in a special manner. They use `init` and `charge` endpoints with tweaked parameters.  
+***refunding can be done via the panel in merchantarea.  
 
 ## Installation
 Bundle or manually install the latest version of the gem:
@@ -45,7 +47,7 @@ gem 'transact_pro'
 ```
 
 ## Usage
-The gem implements `gateway` and `request` objects that handle communication with the remote API for you.  
+The gem implements `gateway`, `request` and `response` objects that handle communication with the remote API for you.  
 All communication is done synchroniously and without failsafes, so if something goes wrong during the remote request (HTTP timeout etc.), you get the raw error and get to handle it.  
 
 Please note that in this gem all configuration option hash keys are constant-case symbols like `:GUID` whereas all parameter keys for requests to the API are snake-case symbols like `:merchant_transaction_id`.
@@ -74,6 +76,8 @@ options = {
 gateway = TransactPro::Gateway.new(options)
 ```
 
+### 2. `TransactPro::Request`
+
 Use the `Gateway` instance's `#request` method to perform requests.  
 
 ```rb
@@ -92,6 +96,25 @@ request_instance = gateway.request(options)
 request_instance.call #=> response
 
 # TransactPro::Request instances also have #to_s method to inspect what parameters are used in the request.
+```
+
+### 3. `TransactPro::Response`
+`Response` objects are thin wrappers around the response bodies received from communicating with the TransactPro API.  
+Use `#to_s` on them to get the raw body and do any handling yourslef.   
+The gem provides a couple methods for ease of use:
+
+```rb
+response = request_instance.call
+
+response.redirect_link #=> "https://..." link to redirect users to for checkout, nil if not applicable
+
+response.status #=> "OK" if all went well, "FAIL" if a payment status response and it did not go through, "ERROR" if API said request was bad
+
+response.tid #=> the 40-symbol long hexdigit transaction ID, nil if not applicable
+
+response.to_s #=> raw body
+
+response.to_h #=> splits the response on "~" and then on first ":" to make key-value pairs, string keys!
 ```
 
 ## Contributing

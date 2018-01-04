@@ -17,6 +17,7 @@ module TransactPro
     PASSWORD_DIGEST_REGEX = %r'\A.{40}\z'
     ROUTING_REGEX = %r'\A[[:alnum:]]{1,12}\z' # an(1..12)
     MERCHANT_TRANSACTION_ID = %r'\A.{5,50}\z' # ans(5..50)
+    TID_REGEX = %r'\A[0-9a-f]+\z'i # h(40)
     USER_IP = %r'\A
       (
         ([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.
@@ -34,12 +35,12 @@ module TransactPro
     STATE = %r'\A.{2,20}\z' # ans(2..20)
     EMAIL = %r'\A.{1,100}\z' # ans(1..100)
     PHONE = %r'\A[0-9\-_]{5,25}\z' # ns(5..25)
-
     CARD_BIN = %r'\A\d{6}\z' # n(6)
     BIN_NAME = %r'\A.{3,50}\z' # uns(3..50)
     BIN_PHONE = %r'\A[0-9\-_]{3,25}\z' # ns(3..25)
     MERCHANT_SITE_URL = %r'\A.{1,255}\z' # ans(1..255)
     MERCHANT_REFERRING_NAME = %r'\A.{1,21}\z' # ans(1..21)
+    F_EXTENDED = %r'\A\d+\z' # n
 
     # 10. Table
     # Field Format Description
@@ -96,35 +97,52 @@ module TransactPro
     }.freeze
 
     INIT_DEFAULTS = {
-      user_ip: "127.0.0.1", name_on_card: "John Doe",
+      name_on_card: "John Doe",
       street: "NA", zip: "NA", city: "NA", country: "NA", state: "NA",
       email: "john_doe@example.com", phone: "00371000000"
     }.freeze
 
-    INIT_STORE_CARD_SMS_SPEC = {
+    INIT_RECURRING_REGISTRATION_SPEC = INIT_SPEC.
+      dup.merge(save_card: {mandatory: true, format: %r'\d+'}).freeze
+    INIT_RECURRING_REGISTRATION_DEFAULTS = INIT_DEFAULTS.
+      dup.merge(save_card: "1").freeze
 
-    }.freeze
-
-    INIT_STORE_CARD_SMS_DEFAULTS = {
-
-    }.freeze
-
+    # 32. Table
+    # Field Format Description
+    # guid ans(19) Your merchant GUID
+    # pwd h(40) SHA1 hash of your processing password
+    # rs an(1..12) Routing string
+    # original_init_id h(40) init_transaction_id of your original transaction
+    # merchant_transaction_id ans(5..50) Your transaction ID
+    # amount n Transaction amount, in MINOR units (i.e. 2150 for $21.50 transaction)
+    # description uns(5..255) Order items description
     INIT_RECURRENT_SPEC = {
-      # TODO
-      # f_extended: 100 # determines the verbosity of responses
+      guid: {mandatory: true, format: GUID_REGEX},
+      pwd: {mandatory: true, format: PASSWORD_DIGEST_REGEX},
+      rs: {mandatory: true, format: ROUTING_REGEX},
+      original_init_id: {mandatory: true, format: TID_REGEX},
+      merchant_transaction_id: {mandatory: true, format: MERCHANT_TRANSACTION_ID},
+      amount: {mandatory: true, format: AMOUNT},
+      description: {mandatory: true, format: DESCRIPTION},
     }.freeze
 
     INIT_RECURRENT_DEFAULTS = {
-      f_extended: 100 # determines the verbosity of responses
+      # none
     }.freeze
 
+    # 34. Table
+    # Field Format Description
+    # init_transaction_id h(40) init_transaction_id received for this recurrent transaction
+    # f_extended n Return extended charge details (optional)
     CHARGE_RECURRENT_SPEC = {
-      # TODO
-      # f_extended: 100 # determines the verbosity of responses
+      guid: {mandatory: true, format: GUID_REGEX},
+      pwd: {mandatory: true, format: PASSWORD_DIGEST_REGEX},
+      init_transaction_id: {mandatory: true, format: TID_REGEX},
+      f_extended: {mandatory: false, format: F_EXTENDED},
     }.freeze
 
     CHARGE_RECURRENT_DEFAULTS = {
-      f_extended: 100 # determines the verbosity of responses
+      f_extended: "100" # determines the verbosity of responses
     }.freeze
 
     # 19. Table
@@ -136,33 +154,16 @@ module TransactPro
     # guid ans(19) Your GUID
     # pwd h(40) SHA1 hash of your processing password
     STATUS_REQUEST_SPEC = {
+      guid: {mandatory: true, format: GUID_REGEX},
+      pwd: {mandatory: true, format: PASSWORD_DIGEST_REGEX},
       request_type: {mandatory: true, format: 'transaction_status'},
-      init_transaction_id: {mandatory: true, format: TODO},
-      f_extended: {mandatory: false, format: TODO},
-      guid: {mandatory: true, format: TODO},
-      pwd: {mandatory: true, format: TODO}
+      init_transaction_id: {mandatory: true, format: TID_REGEX},
+      f_extended: {mandatory: false, format: F_EXTENDED}
     }.freeze
 
     STATUS_REQUEST_DEFAULTS = {
-      request_type: 'transaction_status'
-      f_extended: 100, # determines the verbosity of responses
-    }.freeze
-
-    # 21. Table
-    # Field Format Value
-    # account_guid ans(19) Your merchant account GUID.
-    # pwd h(40) SHA1 hash of your processing password.
-    # init_transaction_id h(40) Transaction ID received from the gateway.
-    # amount_to_refund n Amount you want to refund, in MINOR units.
-    # merchant_transaction_id ans(5..50) Optional field. Can be used to create merchant’s id for transaction. Must be
-    # details a(4) Optional field, pass “true” to get additional information about payment.
-    REFUND_SPEC = {
-      # TODO
-      # f_extended: 100 # determines the verbosity of responses
-    }.freeze
-
-    REFUND_DEFAULTS = {
-      f_extended: 100 # determines the verbosity of responses
+      request_type: 'transaction_status',
+      f_extended: "100", # determines the verbosity of responses
     }.freeze
   end
 end

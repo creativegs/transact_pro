@@ -1,24 +1,14 @@
 class TransactPro::Gateway
   attr_reader :options
 
-  DEFAULTS = {
-    TEST: false,
-    PRODUCTION_ENV: {
-      API_URI: "https://www2.1stpayments.net/gwprocessor2.php"
-    },
-    TEST_ENV: {
-      API_URI: "https://gw2sandbox.tpro.lv:8443/gw2test/gwprocessor2.php"
-    }
-  }.freeze
-
   def initialize(options)
-    test = DEFAULTS[:TEST] || !!options[:TEST]
+    test = TransactPro::DEFAULTS[:TEST] || !!options[:TEST]
 
     env_key = (test ? :TEST_ENV : :PRODUCTION_ENV)
 
     @options = {
       TEST: test,
-      API_URI: DEFAULTS[env_key][:API_URI],
+      API_URI: TransactPro::DEFAULTS[env_key][:API_URI],
       pwd: Digest::SHA1.hexdigest(options[:PASSWORD].to_s),
       guid: options[:GUID].to_s
     }

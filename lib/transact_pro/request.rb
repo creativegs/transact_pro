@@ -3,8 +3,8 @@ class TransactPro::Request
   end
 
   SUPPORTED_METHODS = %i|
-    init init_store_card_sms init_recurrent charge_recurrent status_request
-    refund
+    init init_recurring_registration init_recurrent charge_recurrent
+    status_request
   |.freeze
 
   RECURRING_METHODS = %i|init_recurrent charge_recurrent|.freeze
@@ -22,14 +22,6 @@ class TransactPro::Request
         "'#{@method}' is not a supported API request method"
       )
     end
-
-    # will be handled in validation loop
-    # if @method == :init_recurrent && @options[:ACCOUNT_RECURRING].to_s.size < 1
-    #   raise ArgumentError.new(
-    #     ":#{@method} request requires a ACCOUNT_RECURRING "\
-    #     "to be configured on the gateway"
-    #   )
-    # end
   end
 
   def call
@@ -64,11 +56,10 @@ class TransactPro::Request
       validate(k, @postable_params[k], spec[:format]) if do_validation
     end
 
-    @url = "#{@request_options[:API_URI]}?a=#{method}"
+    @url = "#{@request_options[:API_URI]}?a=#{sendable_method}"
 
-    binding.pry
-
-    @response = RestClient.post(@url, @postable_params)
+    @raw_response = RestClient.post(@url, @postable_params)
+    @response = TransactPro::Response.new(@raw_response.to_s)
   end
 
   private
@@ -91,12 +82,16 @@ class TransactPro::Request
           # a regular user-facing method, preferring 3D account
           options[:ACCOUNT_3D].to_s.size > 0 ?
             options[:ACCOUNT_3D] :
-            ptions[:ACCOUNT_NON3D]
+            options[:ACCOUNT_NON3D]
         end
     end
 
     def recurring_method?
       RECURRING_METHODS.include?(method)
+    end
+
+    def sendable_method
+      method == :init_recurring_registration ? :init : method
     end
 
 end
