@@ -32,11 +32,9 @@ class TransactPro::Response
       portion[%r'\A(OK)|(Status)\:']
     end
 
-    if status_portion.nil?
-      "ERROR"
-    elsif status_portion[%r'\AOK']
+    if status_portion.to_s[%r'\AOK']
       "OK"
-    elsif status_portion[%r'\AStatus']
+    elsif status_portion.to_s[%r'\AStatus']
       status = status_portion.match(%r'\AStatus:(.*)')[1]
       status == "Success" ? "OK" : "FAIL"
     else

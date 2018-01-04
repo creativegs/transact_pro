@@ -112,6 +112,12 @@ RSpec.describe TransactPro::Response do
 
       it { is_expected.to eq("ERROR") }
     end
+
+    context "when called on a response that does not conform to expectations" do
+      let(:body) { "" }
+
+      it { is_expected.to eq("ERROR") }
+    end
   end
 
   describe "#tid" do

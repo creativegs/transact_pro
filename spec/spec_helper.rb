@@ -9,8 +9,6 @@ unless ENV["USE_LIVE_SANDBOX"] == "true"
   WebMock.disable_net_connect!(allow_localhost: false)
 end
 
-abort("Please specify a valid USER_IP environmental variable") if ENV["USER_IP"].to_s.size < 1
-
 Dir[TransactPro.root.join('spec/support/**/*.rb')].each { |file| require file }
 
 RSpec.configure do |config|

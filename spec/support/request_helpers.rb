@@ -2,7 +2,7 @@ module RequestHelpers
   def init_request_options(options={})
     {
       method: :init,
-      user_ip: ENV["USER_IP"],
+      user_ip: ENV["USER_IP"] || "78.23.51.103",
       merchant_transaction_id: SecureRandom.uuid,
       description: "Test purchase",
       amount: "995", # as in 9.95
@@ -14,7 +14,7 @@ module RequestHelpers
   def init_recurring_registration_request_options(options={})
     {
       method: :init_recurring_registration,
-      user_ip: ENV["USER_IP"],
+      user_ip: ENV["USER_IP"] || "78.23.51.103",
       merchant_transaction_id: SecureRandom.uuid,
       description: "Test Subscription registration purchase",
       amount: "995", # as in 9.95

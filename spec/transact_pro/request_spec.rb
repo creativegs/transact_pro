@@ -48,6 +48,18 @@ RSpec.describe TransactPro::Request do
 
       before { mock_init }
 
+      context "when an explicit :rs is passed in request options" do
+        let(:request_options) { super().merge(rs: "CS04") }
+
+        it "prefers a passed :rs key to the default" do
+          make_remote_request
+
+          expect(request.instance_variable_get("@routing_string")).to eq(
+            "CS04"
+          )
+        end
+      end
+
       context "and it is valid" do
         it "makes a remote request and returns the response object" do
           expect(make_remote_request).to be_a(TransactPro::Response)
