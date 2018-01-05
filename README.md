@@ -81,6 +81,9 @@ options = {
 }
 
 gateway = TransactPro::Gateway.new(options)
+
+# Access an initialized gateway instance's underlying options, for example
+gateway.options[:HOSTED_FIELDS_JS_URI] # for HostedFields 
 ```
 
 ### 2. `TransactPro::Request`
