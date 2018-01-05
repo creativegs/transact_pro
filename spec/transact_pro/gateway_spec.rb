@@ -11,6 +11,16 @@ RSpec.describe TransactPro::Gateway do
       it "returns a Gateway instance" do
         expect(gateway).to be_a(described_class)
       end
+
+      it "returns a Gateway instance with correct options from defaults" do
+        expect(gateway.options).to match(
+          hash_including(
+            API_URI: "https://www2.1stpayments.net/gwprocessor2.php",
+            HOSTED_FIELDS_JS_URI: %r"https://www2\.1stpayments\.net/hostedfields",
+            HOSTED_FIELDS_SUBMIT_URI: "https://www2.1stpayments.net",
+          )
+        )
+      end
     end
 
     context "when options do not contain a valid :GUID" do

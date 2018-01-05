@@ -6,7 +6,7 @@
 Lightweight Ruby wrapper for communicating with TransactPro 1stpayments.net card payment API.  
 
 ### What can this gem do?
-Currently core functionality is supported - single and recurring SMS payments with card details entered gateway-side (zero hassle with [PCI compliance](https://www.pcisecuritystandards.org)), and payment outcome check request.     
+Currently core functionality is supported - single and recurring SMS payments with card details entered gateway-side or with HostedFields approach (zero hassle with [PCI compliance](https://www.pcisecuritystandards.org)), and payment outcome check request.     
 As of v1.0.0 (2018-01-04) the full functionality status list is:
 
 | Functionality  | method name | Page in doc  | Support in gem  | response data  |
@@ -62,15 +62,22 @@ To this end, initialize gateway instances like so:
 
 ```rb
 options = {
-  TEST: false, # defaults to false, pass `true` if you want the gem to make requests to the sandbox endpoints 
-  API_URI: "https://something.new" # gem has the endpoint uri in defaults, you may only need this if the domains used suddeny change
+  TEST: false, # defaults to false, pass `true` if you want the gem to make requests to the sandbox endpoints   
   GUID: "CAZY-7319-WI00-0C40", # mandatory
   PASSWORD: "g44B/pAENO2E", # mandatory
   ACCOUNT_3D: "CS01", # default routing string of Account to be used for 3D transactions
   ACCOUNT_NON3D: "CS02", # default routing string of Account to be used for non-3D transactions
   ACCOUNT_RECURRING: "CS03", # default routing string of Account to be used for recurring payment execution
-  custom_return_url: "https://www.example.com/pay/transactpro/response?merchant_transaction_id=ZZZZZZZ" # can be overridden in transaction init request
-  custom_callback_url: "https://www.example.com/pay/transactpro/response?merchant_transaction_id=ZZZZZZZ" # can be overridden in transaction init request
+
+  # The gem has the environment-specific endpoint uris in defaults,
+  # you may only need this if the domains used by TransactPro suddenly change
+  API_URI: "https://something.new",
+  HOSTED_FIELDS_JS_URI: "https://something.new",
+  HOSTED_FIELDS_SUBMIT_URI: "https://something.new",
+
+  # You can specify return urls with path portions different from the ones in TransactPro account settings.
+  custom_return_url: "https://www.example.com/pay/transactpro/response?merchant_transaction_id=ZZZZZZZ", # can be overridden in transaction init request
+  custom_callback_url: "https://www.example.com/pay/transactpro/response?merchant_transaction_id=ZZZZZZZ", # can be overridden in transaction init request
 }
 
 gateway = TransactPro::Gateway.new(options)
