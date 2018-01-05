@@ -40,6 +40,7 @@ module TransactPro
     BIN_PHONE = %r'\A[0-9\-_]{3,25}\z' # ns(3..25)
     MERCHANT_SITE_URL = %r'\A.{1,255}\z' # ans(1..255)
     MERCHANT_REFERRING_NAME = %r'\A.{1,21}\z' # ans(1..21)
+    BACK_URL = %r'\A.{1,255}\z' # ans(1..255)
     F_EXTENDED = %r'\A\d+\z' # n
 
     # 10. Table
@@ -72,7 +73,10 @@ module TransactPro
     # merchant_site_url ans(1..255) Purchase site URL.
     # merchant_referring_name ans(1..21) Must not be send by default. See chapter 3.5 for description if you need
     # to use it.
+    # custom_return_url ans(1..255) Custom return URL
+    # custom_callback_url ans(1..255) Custom callback URL
     INIT_SPEC = {
+      # method: :init
       guid: {mandatory: true, format: GUID_REGEX},
       pwd: {mandatory: true, format: PASSWORD_DIGEST_REGEX},
       rs: {mandatory: true, format: ROUTING_REGEX},
@@ -93,7 +97,9 @@ module TransactPro
       bin_name: {mandatory: false, format: BIN_NAME},
       bin_phone: {mandatory: false, format: BIN_PHONE},
       merchant_site_url: {mandatory: true, format: MERCHANT_SITE_URL},
-      merchant_referring_name: {mandatory: false, format: MERCHANT_REFERRING_NAME}
+      merchant_referring_name: {mandatory: false, format: MERCHANT_REFERRING_NAME},
+      custom_return_url: {mandatory: false, format: BACK_URL},
+      custom_callback_url: {mandatory: false, format: BACK_URL}
     }.freeze
 
     INIT_DEFAULTS = {
@@ -103,6 +109,7 @@ module TransactPro
     }.freeze
 
     INIT_RECURRING_REGISTRATION_SPEC = INIT_SPEC.
+      # method: :init_recurring_registration
       dup.merge(save_card: {mandatory: true, format: %r'\d+'}).freeze
     INIT_RECURRING_REGISTRATION_DEFAULTS = INIT_DEFAULTS.
       dup.merge(save_card: "1").freeze
@@ -117,6 +124,7 @@ module TransactPro
     # amount n Transaction amount, in MINOR units (i.e. 2150 for $21.50 transaction)
     # description uns(5..255) Order items description
     INIT_RECURRENT_SPEC = {
+      # method: :init_recurrent
       guid: {mandatory: true, format: GUID_REGEX},
       pwd: {mandatory: true, format: PASSWORD_DIGEST_REGEX},
       rs: {mandatory: true, format: ROUTING_REGEX},
@@ -135,6 +143,7 @@ module TransactPro
     # init_transaction_id h(40) init_transaction_id received for this recurrent transaction
     # f_extended n Return extended charge details (optional)
     CHARGE_RECURRENT_SPEC = {
+      # method: :charge_recurrent
       guid: {mandatory: true, format: GUID_REGEX},
       pwd: {mandatory: true, format: PASSWORD_DIGEST_REGEX},
       init_transaction_id: {mandatory: true, format: TID_REGEX},
@@ -154,6 +163,7 @@ module TransactPro
     # guid ans(19) Your GUID
     # pwd h(40) SHA1 hash of your processing password
     STATUS_REQUEST_SPEC = {
+      # method: :status_request
       guid: {mandatory: true, format: GUID_REGEX},
       pwd: {mandatory: true, format: PASSWORD_DIGEST_REGEX},
       request_type: {mandatory: true, format: 'transaction_status'},

@@ -50,7 +50,10 @@ gem 'transact_pro'
 The gem implements `gateway`, `request` and `response` objects that handle communication with the remote API for you.  
 All communication is done synchroniously and without failsafes, so if something goes wrong during the remote request (HTTP timeout etc.), you get the raw error and get to handle it.  
 
-Please note that in this gem all configuration option hash keys are constant-case symbols like `:GUID` whereas all parameter keys for requests to the API are snake-case symbols like `:merchant_transaction_id`.
+Consult `lib/transact_pro/request_specs.rb` for details
+on what parameters the various requests expect.  
+
+Please note that in this gem all configuration option hash keys are constant-case symbols like `:GUID` whereas all parameter keys for requests to the API are snake-case symbols like `:merchant_transaction_id`. Make sure all values are `String`s.
 
 ### 1. `TransactPro::Gateway`
 
@@ -93,6 +96,8 @@ Use the `Gateway` instance's `#request` method to build and perform requests.
 ```rb
 options = {
   method: :status_request, # mandatory, exclusively symbol objects for value
+  # + request parameters from `lib/transact_pro/request_specs.rb`
+  
   request_type: 'transaction_status',
   init_transaction_id: "abc123",
   # Note that passing :guid and :pwd is possible and `#call` will always override  
