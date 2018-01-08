@@ -25,6 +25,16 @@ class TransactPro::Request
   end
 
   def call
+    # does prep
+    details
+
+    @raw_response = RestClient.post(@url, @postable_params)
+    @response = TransactPro::Response.new(@raw_response.to_s)
+  end
+
+  def details
+    return @details if defined?(@details)
+
     @defaults ||= TransactPro::RequestSpecs.const_get(
       "#{method.to_s.upcase}_DEFAULTS"
     )
@@ -58,11 +68,11 @@ class TransactPro::Request
 
     @url = "#{@request_options[:API_URI]}?a=#{sendable_method}"
 
-    @raw_response = RestClient.post(@url, @postable_params)
-    @response = TransactPro::Response.new(@raw_response.to_s)
+    @details = {url: @url, params: @postable_params}
   end
 
   private
+
     def validate(key, string, regex)
       unless string[regex]
         raise TransactPro::Request::ValidationError.new(

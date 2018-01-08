@@ -1,6 +1,5 @@
 require "bundler/setup"
 require "cov_helper"
-require "coveralls"; Coveralls.wear!
 require "transact_pro"
 require "pry"
 require 'webmock'

@@ -111,9 +111,8 @@ options = {
 }
 
 request_instance = gateway.request(options)
+request_instance.details #=> {url: "...", params: {...}} # see what will be POSTed to where
 request_instance.call #=> response
-
-# TransactPro::Request instances also have #to_s method to inspect what parameters are used in the request.
 ```
 
 ### 3. `TransactPro::Response`

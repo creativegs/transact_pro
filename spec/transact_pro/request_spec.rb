@@ -218,4 +218,18 @@ RSpec.describe TransactPro::Request do
 
   end
 
+  describe "#details" do
+    subject(:details) { request.details }
+
+    let(:request) { sandbox_gateway.request(request_options) }
+    let(:request_options) { init_request_options }
+
+    it "returns a hash of the :url and :params that will be used in request" do
+      expect(details).to match({
+        url: "https://www2.1stpayments.net/gwprocessor2.php?a=init",
+        params: hash_including(guid: anything)
+      })
+    end
+  end
+
 end
