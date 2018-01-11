@@ -17,7 +17,7 @@ module TransactPro
     PASSWORD_DIGEST_REGEX = %r'\A.{40}\z'
     ROUTING_REGEX = %r'\A[[:alnum:]]{1,12}\z' # an(1..12)
     MERCHANT_TRANSACTION_ID = %r'\A.{5,50}\z' # ans(5..50)
-    TID_REGEX = %r'\A[0-9a-f]+\z'i # h(40)
+    TID_REGEX = %r'\A[0-9a-f]{40}\z'i # h(40)
     USER_IP = %r'\A
       (
         ([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.
@@ -25,7 +25,7 @@ module TransactPro
       ([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])
     \z'x # ns(7..15)
     DESCRIPTION = %r'\A.{5,255}\z' # uns(5..255)
-    AMOUNT = %r'\A[1-9]\d{2,}\z' # n
+    AMOUNT = %r'\A[1-9]\d{2,}\z' # n(3+)
     CURRENCY = %r'\A[[:upper:]]{3}\z' # a(3)
     NAME_ON_CARD = %r'\A.{2,100}\z' # ans(2..100)
     STREET = %r'\A.{2,50}\z' # ans(2..50)

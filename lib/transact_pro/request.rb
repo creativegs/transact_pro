@@ -74,7 +74,7 @@ class TransactPro::Request
   private
 
     def validate(key, string, regex)
-      unless string[regex]
+      unless string.to_s[regex]
         raise TransactPro::Request::ValidationError.new(
           ":#{key} with value '#{string}' is invalid for request, "\
           "expected a match for regex #{regex.inspect}"

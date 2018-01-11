@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    transact_pro (0.9.3)
+    transact_pro (1.0.0)
       rest-client (~> 2.0.2)
 
 GEM
