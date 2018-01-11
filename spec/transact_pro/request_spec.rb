@@ -80,6 +80,16 @@ RSpec.describe TransactPro::Request do
         end
       end
 
+      context "and it passes amount below the 100 minimum specified in docs page 9" do
+        let(:request_options) { super().merge(amount: "1") }
+
+        it "does not raise a TransactPro::Request::ValidationError, allowing to charge cents" do
+          expect{ make_remote_request }.to_not(
+            raise_error(TransactPro::Request::ValidationError)
+          )
+        end
+      end
+
       context "and remote returns an error response" do
         let(:request_options) { super().merge(email: "NA") }
 

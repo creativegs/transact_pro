@@ -25,7 +25,7 @@ module TransactPro
       ([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])
     \z'x # ns(7..15)
     DESCRIPTION = %r'\A.{5,255}\z' # uns(5..255)
-    AMOUNT = %r'\A[1-9]\d{2,}\z' # n(3+)
+    AMOUNT = %r'\A[1-9]\d*\z' # n
     CURRENCY = %r'\A[[:upper:]]{3}\z' # a(3)
     NAME_ON_CARD = %r'\A.{2,100}\z' # ans(2..100)
     STREET = %r'\A.{2,50}\z' # ans(2..50)
