@@ -180,6 +180,18 @@ RSpec.describe TransactPro::Request do
       end
     end
 
+    context "when called on a loose-validation :charge_recurrent request" do
+      let(:request) { loosened_sandbox_gateway.request(request_options) }
+      let(:request_options) { charge_recurrent_request_options }
+
+      before { mock_charge_recurrent }
+
+      it "works unchanged from regular :charge_recurrent" do
+        expect(make_remote_request).to be_a(TransactPro::Response)
+        expect(make_remote_request.status).to eq("OK")
+      end
+    end
+
     context "when called on a :charge_recurrent request" do
       let(:request_options) { charge_recurrent_request_options }
 

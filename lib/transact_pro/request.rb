@@ -104,20 +104,19 @@ class TransactPro::Request
     end
 
     def spec_to_use
+      loosened_const = "LOOSENED_#{method.to_s.upcase}_SPEC" #=> "LOOSENED_INIT_SPEC"
+      const = "#{method.to_s.upcase}_SPEC" #=> "INIT_SPEC"
+
       const =
         if options[:LOOSENED_VALIDATIONS]
-          loosened_const = "LOOSENED_#{method.to_s.upcase}_SPEC" #=> "LOOSENED_INIT_SPEC"
-
-          if defined?(loosened_const)
-            loosened_const
-          else
-            "#{method.to_s.upcase}_SPEC"
+          begin
+            TransactPro::RequestSpecs.const_get(loosened_const)
+          rescue
+            TransactPro::RequestSpecs.const_get(const)
           end
         else
-          "#{method.to_s.upcase}_SPEC"
+          TransactPro::RequestSpecs.const_get(const)
         end
-
-      TransactPro::RequestSpecs.const_get(const) #=> "INIT_SPEC"
     end
 
 end
