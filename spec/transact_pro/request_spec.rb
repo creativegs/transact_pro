@@ -43,6 +43,33 @@ RSpec.describe TransactPro::Request do
 
     let(:request) { sandbox_gateway.request(request_options) }
 
+    context "when called on an :init request with loosened validations" do
+      let(:request) { loosened_sandbox_gateway.request(request_options) }
+      let(:request_options) { init_minimal_request_options }
+
+      before { mock_init }
+
+      context "when the minimum set of params is passed" do
+        it "makes a remote request and returns the response object" do
+          expect(make_remote_request).to be_a(TransactPro::Response)
+          expect(make_remote_request.status).to eq("OK")
+        end
+      end
+
+      context "when one of even the minimum parasm is missing" do
+        let(:request_options) { super().merge(merchant_transaction_id: "1234") }
+
+        it "raises a TransactPro::Request::ValidationError" do
+          expect{ make_remote_request }.to(
+            raise_error(
+              TransactPro::Request::ValidationError,
+              %r"merchant_transaction_id\swith\svalue\s'1234'\sis\sinvalid"xo
+            )
+          )
+        end
+      end
+    end
+
     context "when called on a :init request" do
       let(:request_options) { init_request_options }
 
@@ -84,9 +111,7 @@ RSpec.describe TransactPro::Request do
         let(:request_options) { super().merge(amount: "1") }
 
         it "does not raise a TransactPro::Request::ValidationError, allowing to charge cents" do
-          expect{ make_remote_request }.to_not(
-            raise_error(TransactPro::Request::ValidationError)
-          )
+          expect{ make_remote_request }.to_not raise_error
         end
       end
 
@@ -225,7 +250,6 @@ RSpec.describe TransactPro::Request do
         end
       end
     end
-
   end
 
   describe "#details" do

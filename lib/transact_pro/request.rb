@@ -35,6 +35,7 @@ class TransactPro::Request
   def details
     return @details if defined?(@details)
 
+    # DEPRECATED
     @defaults ||= TransactPro::RequestSpecs.const_get(
       "#{method.to_s.upcase}_DEFAULTS"
     )
@@ -42,9 +43,7 @@ class TransactPro::Request
     @request_options ||= @defaults.merge(options)
     @request_options[:rs] = routing_string
 
-    @spec ||= TransactPro::RequestSpecs.const_get(
-      "#{method.to_s.upcase}_SPEC"
-    )
+    @spec ||= spec_to_use
 
     @postable_params = {}
     @spec.each do |k, spec|
@@ -102,6 +101,23 @@ class TransactPro::Request
 
     def sendable_method
       method == :init_recurring_registration ? :init : method
+    end
+
+    def spec_to_use
+      const =
+        if options[:LOOSENED_VALIDATIONS]
+          loosened_const = "LOOSENED_#{method.to_s.upcase}_SPEC" #=> "LOOSENED_INIT_SPEC"
+
+          if defined?(loosened_const)
+            loosened_const
+          else
+            "#{method.to_s.upcase}_SPEC"
+          end
+        else
+          "#{method.to_s.upcase}_SPEC"
+        end
+
+      TransactPro::RequestSpecs.const_get(const) #=> "INIT_SPEC"
     end
 
 end

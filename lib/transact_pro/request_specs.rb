@@ -103,16 +103,26 @@ module TransactPro
     }.freeze
 
     INIT_DEFAULTS = {
-      name_on_card: "John Doe",
-      street: "NA", zip: "NA", city: "NA", country: "NA", state: "NA",
-      email: "john_doe@example.com", phone: "00371000000"
+      # noop, was used to provide placeholder values to requests
     }.freeze
+
+    LOOSENED_INIT_SPEC = INIT_SPEC.dup.merge(
+      name_on_card: {mandatory: false, format: NAME_ON_CARD},
+      street: {mandatory: false, format: STREET},
+      zip: {mandatory: false, format: ZIP},
+      city: {mandatory: false, format: CITY},
+      country: {mandatory: false, format: COUNTRY},
+      state: {mandatory: false, format: STATE},
+      phone: {mandatory: false, format: PHONE},
+    ).freeze
 
     INIT_RECURRING_REGISTRATION_SPEC = INIT_SPEC.
       # method: :init_recurring_registration
       dup.merge(save_card: {mandatory: true, format: %r'\d+'}).freeze
     INIT_RECURRING_REGISTRATION_DEFAULTS = INIT_DEFAULTS.
       dup.merge(save_card: "1").freeze
+
+    LOOSENED_INIT_RECURRING_REGISTRATION_SPEC = LOOSENED_INIT_SPEC
 
     # 32. Table
     # Field Format Description

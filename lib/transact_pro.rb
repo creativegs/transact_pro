@@ -12,6 +12,7 @@ module TransactPro
 
   DEFAULTS = {
     TEST: false,
+    LOOSENED_VALIDATIONS: false,
     PRODUCTION_ENV: {
       API_URI: "https://www2.1stpayments.net/gwprocessor2.php",
       HOSTED_FIELDS_JS_URI: "https://www2.1stpayments.net/hostedfields/hosted-fields-1.0.5.js",

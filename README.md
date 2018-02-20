@@ -6,7 +6,7 @@
 Lightweight Ruby wrapper for communicating with TransactPro 1stpayments.net card payment API.  
 
 ### What can this gem do?
-Currently core functionality is supported - single and recurring SMS payments with card details entered gateway-side or with HostedFields approach (zero hassle with [PCI compliance](https://www.pcisecuritystandards.org)), and payment outcome check request.     
+Currently core functionality is supported - single and recurring SMS payments with card details entered gateway-side, and payment outcome check request.     
 As of v1.0.0 (2018-01-04) the full functionality status list is:
 
 | Functionality  | method name | Page in doc  | Support in gem  | response data  |
@@ -71,6 +71,14 @@ options = {
   ACCOUNT_3D: "CS01", # default routing string of Account to be used for 3D transactions
   ACCOUNT_NON3D: "CS02", # default routing string of Account to be used for non-3D transactions
   ACCOUNT_RECURRING: "CS03", # default routing string of Account to be used for recurring payment execution
+  LOOSENED_VALIDATIONS: false, # set to true if you have arranged a custom subset of parameters to be sufficient for SMS requests. Disables mandation of these fields:
+  # name_on_card: {mandatory: false, format: NAME_ON_CARD},
+  # street: {mandatory: false, format: STREET},
+  # zip: {mandatory: false, format: ZIP},
+  # city: {mandatory: false, format: CITY},
+  # country: {mandatory: false, format: COUNTRY},
+  # state: {mandatory: false, format: STATE}, 
+  # phone: {mandatory: false, format: PHONE}, 
 
   # The gem has the environment-specific endpoint uris in defaults,
   # you may only need this if the domains used by TransactPro suddenly change

@@ -1,5 +1,19 @@
 module RequestHelpers
   def init_request_options(options={})
+    params = {
+      name_on_card: "John Doe",
+      street: "n/a",
+      zip: "n/a",
+      city: "n/a",
+      country: "LV",
+      state: "n/a",
+      phone: "003710000000"
+    }.merge(options)
+
+    init_minimal_request_options(options).merge(params)
+  end
+
+  def init_minimal_request_options(options={})
     {
       method: :init,
       user_ip: ENV["USER_IP"] || "78.23.51.103",
@@ -7,20 +21,18 @@ module RequestHelpers
       description: "Test purchase",
       amount: "995", # as in 9.95
       currency: "EUR",
+      email: "john.doe@example.com",
       merchant_site_url: "https://example.com",
-    }
+    }.merge(options)
   end
 
   def init_recurring_registration_request_options(options={})
-    {
+    params = {
       method: :init_recurring_registration,
-      user_ip: ENV["USER_IP"] || "78.23.51.103",
-      merchant_transaction_id: SecureRandom.uuid,
       description: "Test Subscription registration purchase",
-      amount: "995", # as in 9.95
-      currency: "EUR",
-      merchant_site_url: "https://example.com",
-    }
+    }.merge(options)
+
+    init_request_options(options).merge(params)
   end
 
   def init_recurrent_request_options(options={})
