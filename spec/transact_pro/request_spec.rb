@@ -135,6 +135,10 @@ RSpec.describe TransactPro::Request do
 
       context "and it is valid" do
         it "makes a remote request and returns the response object" do
+          expect(request.details).to match(
+            hash_including(params: hash_including(save_card: "1"))
+          )
+
           expect(make_remote_request).to be_a(TransactPro::Response)
           expect(make_remote_request.status).to eq("OK")
         end

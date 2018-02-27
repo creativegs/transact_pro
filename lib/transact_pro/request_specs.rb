@@ -122,7 +122,8 @@ module TransactPro
     INIT_RECURRING_REGISTRATION_DEFAULTS = INIT_DEFAULTS.
       dup.merge(save_card: "1").freeze
 
-    LOOSENED_INIT_RECURRING_REGISTRATION_SPEC = LOOSENED_INIT_SPEC
+    LOOSENED_INIT_RECURRING_REGISTRATION_SPEC = LOOSENED_INIT_SPEC.
+      dup.merge(save_card: {mandatory: true, format: %r'\d+'}).freeze
 
     # 32. Table
     # Field Format Description
