@@ -2,7 +2,9 @@ require "bundler/setup"
 require "cov_helper"
 require "transact_pro"
 require "pry"
+require 'timecop'
 require 'webmock'
+
 unless ENV["USE_LIVE_SANDBOX"] == "true"
   WebMock.enable!
   WebMock.disable_net_connect!(allow_localhost: false)

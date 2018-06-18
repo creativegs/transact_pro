@@ -92,6 +92,26 @@ RSpec.describe TransactPro::Request do
           expect(make_remote_request).to be_a(TransactPro::Response)
           expect(make_remote_request.status).to eq("OK")
         end
+
+        context "when the gateway (or request) is told to be verbose" do
+          let(:request_options) { super().merge(VERBOSE: true) }
+
+          before do
+            allow(SecureRandom).to receive(:uuid).and_return("b6abbfe4-d415-4106-9ca0-1e0492bdb7f6")
+          end
+
+          it "outputs details about made requests" do
+            Timecop.freeze(Time.new(2018, 6, 18, 12, 13, 14)) do
+              expect(STDOUT).to receive(:puts).ordered.with(
+                ">> About to make a POST request to TransactPro at 2018-06-18 12:13:14 +0300 GMT.\n"\
+                "  url: https://www2.1stpayments.net/gwprocessor2.php?a=init\n"\
+                "  params: {:guid=>\"CAZY-7319-WI00-0C40\", :pwd=>\"..redacted..\", :rs=>\"CS01\", :merchant_transaction_id=>\"b6abbfe4-d415-4106-9ca0-1e0492bdb7f6\", :user_ip=>\"78.23.51.103\", :description=>\"Test purchase\", :amount=>\"995\", :currency=>\"EUR\", :name_on_card=>\"John Doe\", :street=>\"n/a\", :zip=>\"n/a\", :city=>\"n/a\", :country=>\"LV\", :state=>\"n/a\", :email=>\"john.doe@example.com\", :phone=>\"003710000000\", :merchant_site_url=>\"https://example.com\"}"
+              )
+
+              make_remote_request
+            end
+          end
+        end
       end
 
       context "and it is invalid" do
@@ -125,7 +145,6 @@ RSpec.describe TransactPro::Request do
           expect(make_remote_request.status).to eq("ERROR")
         end
       end
-
     end
 
     context "when called on a :init_recurring_registration request" do

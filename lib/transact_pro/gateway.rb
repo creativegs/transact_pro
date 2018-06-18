@@ -3,16 +3,16 @@ class TransactPro::Gateway
 
   def initialize(options)
     test = TransactPro::DEFAULTS[:TEST] || !!options[:TEST]
+    verbose = !!options[:VERBOSE]
 
     env_key = (test ? :TEST_ENV : :PRODUCTION_ENV)
 
     @options = {
-      TEST: test,
       pwd: Digest::SHA1.hexdigest(options[:PASSWORD].to_s),
       guid: options[:GUID].to_s
     }.merge(TransactPro::DEFAULTS[env_key])
 
-    @options.merge!(options)
+    @options.merge!(options.merge(TEST: test, VERBOSE: verbose))
 
     unless @options[:GUID].to_s[%r'\A(?:\w){4}-(?:\w){4}-(?:\w){4}-(?:\w){4}\z']
       raise ArgumentError.new(

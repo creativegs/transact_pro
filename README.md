@@ -66,6 +66,7 @@ To this end, initialize gateway instances like so:
 ```rb
 options = {
   TEST: false, # defaults to false, pass `true` if you want the gem to make requests to the sandbox endpoints   
+  VERBOSE: false, # defaults to false. Initialize with true to have the gem be verbose about that it is doing, especially what params are used in requests.
   GUID: "CAZY-7319-WI00-0C40", # mandatory
   PASSWORD: "g44B/pAENO2E", # mandatory
   ACCOUNT_3D: "CS01", # default routing string of Account to be used for 3D transactions

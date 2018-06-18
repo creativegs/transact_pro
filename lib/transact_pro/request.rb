@@ -28,6 +28,14 @@ class TransactPro::Request
     # does prep
     details
 
+    if options[:VERBOSE]
+      puts(
+        ">> About to make a POST request to TransactPro at #{Time.now} GMT.\n"\
+        "  url: #{@url}\n"\
+        "  params: #{@postable_params.merge(pwd: "..redacted..")}"
+      )
+    end
+
     @raw_response = RestClient.post(@url, @postable_params)
     @response = TransactPro::Response.new(@raw_response.to_s)
   end
